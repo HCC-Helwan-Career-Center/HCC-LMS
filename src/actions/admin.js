@@ -148,15 +148,25 @@ export async function enrollUserInTrack(userId, trackSlug) {
     const track = await prisma.track.findUnique({ where: { slug: trackSlug } });
     if (!track) return { error: "Track not found." };
 
-    const existing = await prisma.enrollment.findUnique({
-      where: { userId_trackId: { userId, trackId: track.id } }
-    });
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return { error: "User not found." };
 
-    if (existing) return { error: "User is already enrolled in this track." };
+    if (user.role === "mentor") {
+      await prisma.track.update({
+        where: { id: track.id },
+        data: { mentors: { connect: { id: userId } } }
+      });
+    } else {
+      const existing = await prisma.enrollment.findUnique({
+        where: { userId_trackId: { userId, trackId: track.id } }
+      });
 
-    await prisma.enrollment.create({
-      data: { userId, trackId: track.id }
-    });
+      if (existing) return { error: "User is already enrolled in this track." };
+
+      await prisma.enrollment.create({
+        data: { userId, trackId: track.id }
+      });
+    }
 
     revalidatePath("/dashboard/admin/users");
     revalidatePath("/dashboard/admin");
@@ -174,6 +184,15 @@ export async function unenrollUserFromTrack(userId, trackSlug) {
     const track = await prisma.track.findUnique({ where: { slug: trackSlug } });
     if (!track) return { error: "Track not found." };
 
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return { error: "User not found." };
+
+    // Clean up both relationships just in case to fix past corrupted data
+    await prisma.track.update({
+      where: { id: track.id },
+      data: { mentors: { disconnect: { id: userId } } }
+    });
+    
     await prisma.enrollment.deleteMany({
       where: { userId, trackId: track.id }
     });
