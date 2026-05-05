@@ -1,76 +1,60 @@
-import { Bell, Megaphone, FileText, Calendar, CheckCircle2 } from "lucide-react";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { Bell, Megaphone, CheckCircle2 } from "lucide-react";
 import styles from "./notifications.module.css";
 
-const notifications = [
-  {
-    id: 1,
-    type: "assignment",
-    title: "New Assignment: Neural Network Implementation",
-    message: "A new assignment has been posted for the AI track. Due in 5 days.",
-    time: "2 hours ago",
-    read: false,
-    icon: FileText,
-    color: "#8B5CF6"
-  },
-  {
-    id: 2,
-    type: "announcement",
-    title: "General Meeting This Friday",
-    message: "Don't forget the all-hands meeting this Friday at 6:00 PM in Hall A.",
-    time: "1 day ago",
-    read: false,
-    icon: Megaphone,
-    color: "#E8871E"
-  },
-  {
-    id: 3,
-    type: "event",
-    title: "Upcoming Session Reminder",
-    message: "Your session 'Network Security & Protocols' starts tomorrow at 3:00 PM.",
-    time: "2 days ago",
-    read: true,
-    icon: Calendar,
-    color: "#10B981"
-  },
-  {
-    id: 4,
-    type: "system",
-    title: "Track Enrolled Successfully",
-    message: "You have been successfully enrolled in the Cybersecurity track.",
-    time: "1 week ago",
-    read: true,
-    icon: CheckCircle2,
-    color: "#3B82F6"
-  }
-];
+export default async function NotificationsPage() {
+  const session = await auth();
+  if (!session) return null;
 
-export default function NotificationsPage() {
+  // Find tracks the student is enrolled in
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: { enrollments: { include: { track: true } } }
+  });
+  
+  const trackSlugs = user?.enrollments.map(e => e.track.slug) || [];
+  trackSlugs.push("all"); // Always include "all" announcements
+
+  const announcements = await prisma.announcement.findMany({
+    where: { target: { in: trackSlugs } },
+    include: { author: true },
+    orderBy: { createdAt: "desc" }
+  });
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Notifications</h1>
-          <p className={styles.subtitle}>Stay updated on assignments and announcements.</p>
+          <p className={styles.subtitle}>Stay updated on announcements from mentors and admins.</p>
         </div>
-        <button className="btn btn-ghost">Mark all as read</button>
       </div>
 
       <div className={styles.list}>
-        {notifications.map((n) => (
-          <div key={n.id} className={`${styles.item} ${!n.read ? styles.unread : ""}`}>
-            <div className={styles.iconWrap} style={{ background: `${n.color}15`, color: n.color }}>
-              <n.icon size={20} />
+        {announcements.map((ann) => (
+          <div key={ann.id} className={styles.item}>
+            <div className={styles.iconWrap} style={{ background: "#E8871E15", color: "#E8871E" }}>
+              <Megaphone size={20} />
             </div>
             <div className={styles.content}>
               <div className={styles.itemHeader}>
-                <strong>{n.title}</strong>
-                <span>{n.time}</span>
+                <strong>{ann.title}</strong>
+                <span>{ann.createdAt.toLocaleDateString()}</span>
               </div>
-              <p>{n.message}</p>
+              <p>{ann.body}</p>
+              <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px' }}>
+                Posted by {ann.author.name} {ann.target !== "all" ? `• to ${ann.target}` : ""}
+              </div>
             </div>
-            {!n.read && <div className={styles.unreadDot} />}
           </div>
         ))}
+        {announcements.length === 0 && (
+          <div style={{ textAlign: "center", padding: "40px", color: "#94A3B8" }}>
+            <Bell size={32} style={{ margin: "0 auto 16px", opacity: 0.5 }} />
+            <p>You have no notifications yet.</p>
+          </div>
+        )}
       </div>
     </div>
   );

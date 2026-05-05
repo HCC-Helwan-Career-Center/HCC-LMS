@@ -29,10 +29,14 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  enrollments   Enrollment[]
-  announcements Announcement[]
+  accounts          Account[]
+  sessions          Session[]
+  enrollments       Enrollment[]
+  announcements     Announcement[]
+  mentorTracks      Track[]           @relation("TrackMentors")
+  materials         Material[]
+  learningSessions  LearningSession[]
+  mentorNotes       MentorNote[]
 }
 
 model Account {
@@ -78,7 +82,10 @@ model Track {
   color       String   @default("#8B5CF6")
   createdAt   DateTime @default(now())
 
-  enrollments Enrollment[]
+  enrollments      Enrollment[]
+  mentors          User[]            @relation("TrackMentors")
+  materials        Material[]
+  learningSessions LearningSession[]
 }
 
 model Enrollment {
@@ -105,4 +112,48 @@ model Announcement {
   updatedAt DateTime @updatedAt
 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model Material {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  type         String   // PDF, LINK, VIDEO
+  url          String
+  trackId      String
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  track      Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  uploadedBy User  @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+}
+
+model LearningSession {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  date            DateTime
+  durationMinutes Int
+  type            String   // ONLINE, IN_PERSON
+  meetingLink     String?
+  location        String?
+  status          String   @default("UPCOMING") // UPCOMING, COMPLETED
+  trackId         String
+  mentorId        String
+  createdAt       DateTime @default(now())
+
+  track  Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  mentor User  @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+}
+
+model MentorNote {
+  id        String   @id @default(cuid())
+  mentorId  String
+  studentId String
+  content   String
+  createdAt DateTime @default(now())
+
+  mentor  User @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  // For simplicity, we don't strictly need a relation to student User if we just store ID, 
+  // but it's better to relate it.
 }

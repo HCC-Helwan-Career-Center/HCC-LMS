@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import styles from "./auth.module.css";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const justRegistered = searchParams.get("registered") === "true";
 
@@ -49,6 +49,71 @@ export default function LoginPage() {
   };
 
   return (
+    <>
+      <form onSubmit={handleSubmit}>
+        {justRegistered && (
+          <div className={styles.errorAlert} style={{ background: '#e8f5e9', borderColor: '#4caf50', color: '#2e7d32' }}>
+            Account created successfully! You can now sign in.
+          </div>
+        )}
+        {error && <div className={styles.errorAlert}>{error}</div>}
+
+        <div className={styles.inputGroup}>
+          <label htmlFor="login-email">Email Address</label>
+          <div className={styles.inputWrap}>
+            <Mail size={18} className={styles.inputIcon} />
+            <input
+              type="email"
+              id="login-email"
+              placeholder="you@example.com"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+          </div>
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label htmlFor="login-password">Password</label>
+          <div className={styles.inputWrap}>
+            <Lock size={18} className={styles.inputIcon} />
+            <input
+              type={showPassword ? "text" : "password"}
+              id="login-password"
+              placeholder="Enter your password"
+              required
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            />
+            <button
+              type="button"
+              className={styles.togglePassword}
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label="Toggle password visibility"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.formOptions}>
+          <label className={styles.checkbox}>
+            <input type="checkbox" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" className={styles.forgotLink}>Forgot password?</a>
+        </div>
+
+        <button type="submit" className="btn btn-primary btn-lg" disabled={loading} style={{ width: "100%" }}>
+          {loading ? "Signing in..." : <>Sign In <ArrowRight size={18} /></>}
+        </button>
+      </form>
+    </>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <div className={styles.authPage}>
       <div className={styles.authLeft}>
         <div className={styles.authLeftContent}>
@@ -75,64 +140,9 @@ export default function LoginPage() {
             <Link href="/register" className={styles.authLink}>Register here</Link>
           </p>
 
-          <form onSubmit={handleSubmit}>
-            {justRegistered && (
-              <div className={styles.errorAlert} style={{ background: '#e8f5e9', borderColor: '#4caf50', color: '#2e7d32' }}>
-                Account created successfully! You can now sign in.
-              </div>
-            )}
-            {error && <div className={styles.errorAlert}>{error}</div>}
-
-            <div className={styles.inputGroup}>
-              <label htmlFor="login-email">Email Address</label>
-              <div className={styles.inputWrap}>
-                <Mail size={18} className={styles.inputIcon} />
-                <input
-                  type="email"
-                  id="login-email"
-                  placeholder="you@example.com"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label htmlFor="login-password">Password</label>
-              <div className={styles.inputWrap}>
-                <Lock size={18} className={styles.inputIcon} />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="login-password"
-                  placeholder="Enter your password"
-                  required
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-                <button
-                  type="button"
-                  className={styles.togglePassword}
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label="Toggle password visibility"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.formOptions}>
-              <label className={styles.checkbox}>
-                <input type="checkbox" />
-                <span>Remember me</span>
-              </label>
-              <a href="#" className={styles.forgotLink}>Forgot password?</a>
-            </div>
-
-            <button type="submit" className="btn btn-primary btn-lg" disabled={loading} style={{ width: "100%" }}>
-              {loading ? "Signing in..." : <>Sign In <ArrowRight size={18} /></>}
-            </button>
-          </form>
+          <Suspense fallback={<div>Loading form...</div>}>
+            <LoginForm />
+          </Suspense>
 
           <div className={styles.divider}>
             <span>or</span>

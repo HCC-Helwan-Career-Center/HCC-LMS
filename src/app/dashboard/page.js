@@ -47,6 +47,10 @@ export default async function DashboardPage() {
     redirect("/dashboard/admin");
   }
 
+  if (userRecord?.role === "mentor") {
+    redirect("/dashboard/mentor");
+  }
+
   const enrolledTracks = userRecord?.enrollments.map(e => {
     const meta = getTrackMeta(e.track.slug);
     return {

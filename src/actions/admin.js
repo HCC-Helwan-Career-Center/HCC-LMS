@@ -123,6 +123,36 @@ export async function updateTrack(trackId, data) {
   }
 }
 
+export async function assignMentorToTrack(trackId, mentorId) {
+  await requireAdmin();
+  try {
+    await prisma.track.update({
+      where: { id: trackId },
+      data: { mentors: { connect: { id: mentorId } } }
+    });
+    revalidatePath("/dashboard/admin/tracks");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to assign mentor:", error);
+    return { error: "Failed to assign mentor." };
+  }
+}
+
+export async function removeMentorFromTrack(trackId, mentorId) {
+  await requireAdmin();
+  try {
+    await prisma.track.update({
+      where: { id: trackId },
+      data: { mentors: { disconnect: { id: mentorId } } }
+    });
+    revalidatePath("/dashboard/admin/tracks");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to remove mentor:", error);
+    return { error: "Failed to remove mentor." };
+  }
+}
+
 // ---- Announcements ----
 
 export async function createAnnouncement(data) {

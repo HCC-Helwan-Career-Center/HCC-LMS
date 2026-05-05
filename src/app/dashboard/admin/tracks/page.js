@@ -7,6 +7,9 @@ export default async function TracksPage() {
       enrollments: {
         include: { user: true },
       },
+      mentors: {
+        select: { id: true, name: true, email: true },
+      },
       _count: {
         select: { enrollments: true },
       },
@@ -20,7 +23,8 @@ export default async function TracksPage() {
     description: t.description,
     color: t.color,
     studentCount: t.enrollments.filter((e) => e.user.role === "student").length,
-    mentorCount: t.enrollments.filter((e) => e.user.role === "mentor").length,
+    mentorCount: t.mentors.length,
+    mentors: t.mentors,
     totalEnrollments: t._count.enrollments,
     enrollments: t.enrollments.map((e) => ({
       id: e.id,
@@ -30,5 +34,10 @@ export default async function TracksPage() {
     })),
   }));
 
-  return <TracksClient tracks={serialized} />;
+  const mentors = await prisma.user.findMany({
+    where: { role: "mentor" },
+    select: { id: true, name: true, email: true },
+  });
+
+  return <TracksClient tracks={serialized} mentors={mentors} />;
 }
