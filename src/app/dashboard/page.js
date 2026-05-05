@@ -43,6 +43,10 @@ export default async function DashboardPage() {
     }
   });
 
+  if (userRecord?.role === "admin") {
+    redirect("/dashboard/admin");
+  }
+
   const enrolledTracks = userRecord?.enrollments.map(e => {
     const meta = getTrackMeta(e.track.slug);
     return {

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
-import { changeUserRole, deleteUser } from "@/actions/admin";
+import { X, Plus } from "lucide-react";
+import { changeUserRole, deleteUser, createUser } from "@/actions/admin";
 import styles from "../admin.module.css";
 
 const ITEMS_PER_PAGE = 10;
@@ -17,6 +17,8 @@ export default function UsersClient({ users, tracks }) {
   const [page, setPage] = useState(1);
   const [viewUser, setViewUser] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [createForm, setCreateForm] = useState({ name: "", email: "", password: "", track: "none", role: "student" });
   const [busy, setBusy] = useState(false);
 
   // Filter logic
@@ -52,6 +54,23 @@ export default function UsersClient({ users, tracks }) {
     router.refresh();
   }
 
+  async function handleCreate() {
+    if (!createForm.email || !createForm.password || !createForm.name) {
+      alert("Name, email, and password are required.");
+      return;
+    }
+    setBusy(true);
+    const res = await createUser(createForm);
+    setBusy(false);
+    if (res.error) {
+      alert(res.error);
+      return;
+    }
+    setCreateForm({ name: "", email: "", password: "", track: "none", role: "student" });
+    setShowCreate(false);
+    router.refresh();
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
@@ -60,6 +79,13 @@ export default function UsersClient({ users, tracks }) {
       </div>
 
       <div className={styles.sectionCard}>
+        <div className={styles.sectionHeader}>
+          <h2>User List</h2>
+          <button className="btn btn-primary" style={{ padding: '8px 20px', fontSize: '0.875rem' }} onClick={() => setShowCreate(true)}>
+            <Plus size={16} /> Add User
+          </button>
+        </div>
+        
         {/* Filters */}
         <div className={styles.filtersBar}>
           <input
@@ -197,6 +223,55 @@ export default function UsersClient({ users, tracks }) {
               <button className="btn btn-secondary" onClick={() => setConfirmDelete(null)} style={{ padding: '8px 20px', fontSize: '0.875rem' }}>Cancel</button>
               <button className="btn btn-primary" onClick={handleDelete} disabled={busy} style={{ padding: '8px 20px', fontSize: '0.875rem', background: '#D32F2F' }}>
                 {busy ? "Deleting..." : "Delete User"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add User Modal */}
+      {showCreate && (
+        <div className={styles.modalOverlay} onClick={() => setShowCreate(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Add New User</h3>
+              <button className={styles.actionBtn} onClick={() => setShowCreate(false)}><X size={16} /></button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label>Full Name</label>
+                <input value={createForm.name} onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })} placeholder="John Doe" />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Email</label>
+                <input type="email" value={createForm.email} onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })} placeholder="john@example.com" />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Password</label>
+                <input type="text" value={createForm.password} onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })} placeholder="Temp password..." />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Role</label>
+                <select value={createForm.role} onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}>
+                  <option value="student">Student</option>
+                  <option value="mentor">Mentor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Enroll in Track</label>
+                <select value={createForm.track} onChange={(e) => setCreateForm({ ...createForm, track: e.target.value })}>
+                  <option value="none">None</option>
+                  {tracks.map((t) => (
+                    <option key={t.slug} value={t.slug}>{t.title}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button className="btn btn-secondary" onClick={() => setShowCreate(false)} style={{ padding: '8px 20px', fontSize: '0.875rem' }}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleCreate} disabled={busy} style={{ padding: '8px 20px', fontSize: '0.875rem' }}>
+                {busy ? "Creating..." : "Create User"}
               </button>
             </div>
           </div>

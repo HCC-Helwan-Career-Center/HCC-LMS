@@ -6,6 +6,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcryptjs";
 
 // ---- helpers ----
 
@@ -58,6 +59,44 @@ export async function deleteUser(userId) {
   } catch (error) {
     console.error("Failed to delete user:", error);
     return { error: "Failed to delete user." };
+  }
+}
+
+export async function createUser(data) {
+  await requireAdmin();
+
+  try {
+    const existing = await prisma.user.findUnique({ where: { email: data.email } });
+    if (existing) return { error: "User with this email already exists." };
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const newUser = await prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        role: data.role || "student",
+        emailVerified: new Date(),
+      },
+    });
+
+    if (data.track && data.track !== "none") {
+      const track = await prisma.track.findUnique({ where: { slug: data.track } });
+      if (track) {
+        await prisma.enrollment.create({
+          data: {
+            userId: newUser.id,
+            trackId: track.id,
+          },
+        });
+      }
+    }
+
+    revalidatePath("/dashboard/admin/users");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to create user:", error);
+    return { error: "Failed to create user." };
   }
 }
 
