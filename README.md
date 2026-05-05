@@ -72,6 +72,16 @@ A modern, high-performance Learning Management System built for **Helwan Career 
 - `prisma/`: Database schema and seed scripts.
 - `public/`: Static assets and images.
 
+## 👥 Contributors
+
+A big thank you to the development team who made this project possible:
+
+- **Youssef Halawa**
+- **Abdelrahman Ehab**
+- **Mohamed Hassan**
+- **Abdelrahman Mahmoud**
+- **Hussein Elhaddad**
+
 ## 📝 License
 
 This project is developed for the **Helwan Career Center (HCC)**. All rights reserved.
