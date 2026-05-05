@@ -141,6 +141,52 @@ export async function updateTrack(trackId, data) {
   }
 }
 
+export async function enrollUserInTrack(userId, trackSlug) {
+  await requireAdmin();
+
+  try {
+    const track = await prisma.track.findUnique({ where: { slug: trackSlug } });
+    if (!track) return { error: "Track not found." };
+
+    const existing = await prisma.enrollment.findUnique({
+      where: { userId_trackId: { userId, trackId: track.id } }
+    });
+
+    if (existing) return { error: "User is already enrolled in this track." };
+
+    await prisma.enrollment.create({
+      data: { userId, trackId: track.id }
+    });
+
+    revalidatePath("/dashboard/admin/users");
+    revalidatePath("/dashboard/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to enroll user:", error);
+    return { error: "Failed to enroll user." };
+  }
+}
+
+export async function unenrollUserFromTrack(userId, trackSlug) {
+  await requireAdmin();
+
+  try {
+    const track = await prisma.track.findUnique({ where: { slug: trackSlug } });
+    if (!track) return { error: "Track not found." };
+
+    await prisma.enrollment.deleteMany({
+      where: { userId, trackId: track.id }
+    });
+
+    revalidatePath("/dashboard/admin/users");
+    revalidatePath("/dashboard/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to unenroll user:", error);
+    return { error: "Failed to unenroll user." };
+  }
+}
+
 export async function assignMentorToTrack(trackId, mentorId) {
   await requireAdmin();
   try {

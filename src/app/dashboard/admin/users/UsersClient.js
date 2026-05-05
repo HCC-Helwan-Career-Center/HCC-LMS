@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Plus } from "lucide-react";
-import { changeUserRole, deleteUser, createUser } from "@/actions/admin";
+import { X, Plus, Trash2 } from "lucide-react";
+import { changeUserRole, deleteUser, createUser, enrollUserInTrack, unenrollUserFromTrack } from "@/actions/admin";
 import styles from "../admin.module.css";
 
 const ITEMS_PER_PAGE = 10;
@@ -68,6 +68,40 @@ export default function UsersClient({ users, tracks }) {
     }
     setCreateForm({ name: "", email: "", password: "", track: "none", role: "student" });
     setShowCreate(false);
+    router.refresh();
+  }
+
+  async function handleAddTrack(userId, trackSlug) {
+    if (trackSlug === "none") return;
+    setBusy(true);
+    const res = await enrollUserInTrack(userId, trackSlug);
+    setBusy(false);
+    if (res.error) {
+      alert(res.error);
+      return;
+    }
+    setViewUser({
+      ...viewUser,
+      trackSlugs: [...viewUser.trackSlugs, trackSlug],
+      tracks: [...viewUser.tracks, tracks.find(t => t.slug === trackSlug)?.title || trackSlug]
+    });
+    router.refresh();
+  }
+
+  async function handleRemoveTrack(userId, trackSlug) {
+    if (!confirm("Are you sure you want to remove the user from this track?")) return;
+    setBusy(true);
+    const res = await unenrollUserFromTrack(userId, trackSlug);
+    setBusy(false);
+    if (res.error) {
+      alert(res.error);
+      return;
+    }
+    setViewUser({
+      ...viewUser,
+      trackSlugs: viewUser.trackSlugs.filter(t => t !== trackSlug),
+      tracks: viewUser.tracks.filter((t, i) => viewUser.trackSlugs[i] !== trackSlug)
+    });
     router.refresh();
   }
 
@@ -201,7 +235,37 @@ export default function UsersClient({ users, tracks }) {
               <div className={styles.formGroup}><label>GitHub</label><p>{viewUser.github || "—"}</p></div>
               <div className={styles.formGroup}><label>LinkedIn</label><p>{viewUser.linkedin || "—"}</p></div>
               <div className={styles.formGroup}><label>Role</label><p style={{ textTransform: 'capitalize' }}>{viewUser.role}</p></div>
-              <div className={styles.formGroup}><label>Tracks</label><p>{viewUser.tracks.join(", ") || "None"}</p></div>
+              <div className={styles.formGroup}>
+                <label>Tracks</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+                  {viewUser.trackSlugs.map((slug, i) => (
+                    <span key={slug} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: '#F1F5F9', padding: '4px 8px', borderRadius: '4px', fontSize: '0.875rem' }}>
+                      {viewUser.tracks[i]}
+                      <button onClick={() => handleRemoveTrack(viewUser.id, slug)} disabled={busy} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#EF4444', padding: 0, display: 'flex' }}>
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
+                  {viewUser.trackSlugs.length === 0 && <span style={{ color: '#94A3B8', fontSize: '0.875rem' }}>None</span>}
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <select 
+                    className={styles.filterSelect} 
+                    style={{ flex: 1, margin: 0 }}
+                    onChange={(e) => {
+                      handleAddTrack(viewUser.id, e.target.value);
+                      e.target.value = "none";
+                    }}
+                    disabled={busy}
+                    defaultValue="none"
+                  >
+                    <option value="none">Add to track...</option>
+                    {tracks.filter(t => !viewUser.trackSlugs.includes(t.slug)).map((t) => (
+                      <option key={t.slug} value={t.slug}>{t.title}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               <div className={styles.formGroup}><label>Joined</label><p>{viewUser.createdAt}</p></div>
             </div>
           </div>
