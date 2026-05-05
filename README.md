@@ -1,34 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HCC Learning Management System (LMS)
 
-## Getting Started
+![HCC LMS Banner](https://hcc-lms.vercel.app/images/hcc_logo.webp)
 
-First, run the development server:
+A modern, high-performance Learning Management System built for **Helwan Career Center (HCC)**. This platform streamlines student training, track management, and mentor-student interactions with a focus on premium user experience and real-time performance.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🚀 **Live Demo:** [hcc-lms.vercel.app](https://hcc-lms.vercel.app/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Multi-Role Dashboards:** Tailored interfaces for Students, Mentors, and Administrators.
+- **Track Management:** Structured learning paths for AI, Cybersecurity, Software Engineering, and more.
+- **Resource Hub:** Centralized storage for learning materials (PDFs, Videos, Links).
+- **Session Scheduling:** Real-time tracking of upcoming online and in-person sessions.
+- **Announcement System:** Global and track-specific broadcast systems.
+- **Progress Tracking:** Visualized student progress and milestone achievements.
+- **Secure Authentication:** Robust auth powered by NextAuth.js with role-based access control.
 
-## Learn More
+## 🛠️ Technology Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** [Next.js 16 (App Router)](https://nextjs.org/) with Turbopack
+- **Language:** JavaScript (ESM)
+- **Database:** [PostgreSQL](https://www.postgresql.org/) (Hosted on [Neon](https://neon.tech/))
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Authentication:** [NextAuth.js v5](https://next-auth.js.org/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Styling:** Vanilla CSS Modules with a premium design system
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
 
-## Deploy on Vercel
+- Node.js 18.x or later
+- A PostgreSQL database (Neon recommended)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Installation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/HCC-LMS.git
+   cd hcc-lms
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup:**
+   Create a `.env` file in the root directory and add the following:
+   ```env
+   DATABASE_URL="your_postgresql_connection_string"
+   AUTH_SECRET="your_nextauth_secret"
+   ```
+
+4. **Database Initialization:**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   npx prisma db seed
+   ```
+
+5. **Run Development Server:**
+   ```bash
+   npm run dev
+   ```
+
+## 🏗️ Project Structure
+
+- `src/app`: Next.js App Router pages and API routes.
+- `src/components`: Reusable UI components (Landing, Dashboard, Layout).
+- `prisma/`: Database schema and seed scripts.
+- `public/`: Static assets and images.
+
+## 📝 License
+
+This project is developed for the **Helwan Career Center (HCC)**. All rights reserved.
+
+---
+Built with ❤️ by the HCC Development Team.
+
