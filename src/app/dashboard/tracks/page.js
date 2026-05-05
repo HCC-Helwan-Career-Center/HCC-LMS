@@ -34,7 +34,7 @@ export default async function MyTracksPage() {
       icon: meta.icon,
       color: meta.color,
       progress: 0,
-      enrolled: e.createdAt.toLocaleDateString(),
+      enrolled: e.createdAt.toISOString().split("T")[0],
       modules: [
         { name: "Welcome Module", status: "current" },
         { name: "Module 1", status: "locked" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -26,14 +26,23 @@ const bottomLinks = [
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
-  // Use session data or fallback for UI gracefully
-  const user = { 
+  // Use stable defaults until client mounts to avoid hydration mismatch
+  const user = mounted ? { 
     name: session?.user?.name || "Student", 
     initials: session?.user?.name?.substring(0, 2).toUpperCase() || "ST", 
     role: session?.user?.role || "student" 
+  } : {
+    name: "Student",
+    initials: "ST",
+    role: "student"
   };
 
   return (

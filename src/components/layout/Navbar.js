@@ -28,6 +28,7 @@ export default function Navbar() {
     <nav
       className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}
       id="main-nav"
+      suppressHydrationWarning
     >
       <div className={`container ${styles.navInner}`}>
         <Link href="/" className={styles.logo}>
