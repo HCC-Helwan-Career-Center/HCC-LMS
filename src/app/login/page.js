@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import styles from "./auth.module.css";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const justRegistered = searchParams.get("registered") === "true";
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
 
@@ -72,6 +76,11 @@ export default function LoginPage() {
           </p>
 
           <form onSubmit={handleSubmit}>
+            {justRegistered && (
+              <div className={styles.errorAlert} style={{ background: '#e8f5e9', borderColor: '#4caf50', color: '#2e7d32' }}>
+                Account created successfully! You can now sign in.
+              </div>
+            )}
             {error && <div className={styles.errorAlert}>{error}</div>}
 
             <div className={styles.inputGroup}>

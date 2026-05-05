@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, GraduationCap, Brain, ShieldCheck, Code, Info } from "lucide-react";
-import { registerUser, resendVerificationEmail } from "@/actions/auth";
+import { registerUser } from "@/actions/auth";
 import styles from "../login/auth.module.css";
 import regStyles from "./register.module.css";
 
@@ -14,8 +15,8 @@ const trackOptions = [
 ];
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState("form"); // "form" | "verify"
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,9 +28,6 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [mockLink, setMockLink] = useState(null);
-  const [resending, setResending] = useState(false);
-  const [resendMsg, setResendMsg] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,78 +49,10 @@ export default function RegisterPage() {
     if (res?.error) {
       setError(res.error);
     } else {
-      if (res?.mockedEmail && res?.mockedLink) {
-        setMockLink(res.mockedLink);
-      }
-      setStep("verify");
+      // Registration successful — redirect to login with success message
+      router.push("/login?registered=true");
     }
   };
-
-  if (step === "verify") {
-    return (
-      <div className={regStyles.verifyPage}>
-        <div className={regStyles.verifyCard}>
-          <div className={regStyles.verifyIcon}>📧</div>
-          <h1>Verify Your Email</h1>
-          <p>
-            We&apos;ve sent a verification link to <strong>{formData.email}</strong>.
-            Please check your inbox and click the link to activate your account.
-          </p>
-          {mockLink && (
-            <div style={{ marginTop: '20px', padding: '15px', background: '#ffebee', border: '1px solid #f44336', borderRadius: '8px', color: '#d32f2f' }}>
-              <strong>Development Mode:</strong> Since no email provider is configured, we didn&apos;t actually send an email. 
-              <br/><br/>
-              Please click this link to verify your account:<br/>
-              <a href={mockLink} style={{ color: '#d32f2f', fontWeight: 'bold', wordBreak: 'break-all' }}>{mockLink}</a>
-            </div>
-          )}
-          <div className={regStyles.verifySteps}>
-            <div className={regStyles.verifyStep}>
-              <span>1</span> Open your email inbox
-            </div>
-            <div className={regStyles.verifyStep}>
-              <span>2</span> Click the verification link from HCC
-            </div>
-            <div className={regStyles.verifyStep}>
-              <span>3</span> Return here to log in
-            </div>
-          </div>
-          <div className={regStyles.verifyActions}>
-            <Link href="/login" className="btn btn-primary">
-              Go to Login <ArrowRight size={16} />
-            </Link>
-            <button
-              className="btn btn-secondary"
-              disabled={resending}
-              onClick={async () => {
-                setResending(true);
-                setResendMsg(null);
-                const res = await resendVerificationEmail(formData.email);
-                setResending(false);
-                if (res?.error) {
-                  setResendMsg({ type: "error", text: res.error });
-                } else {
-                  if (res?.mockedLink) setMockLink(res.mockedLink);
-                  setResendMsg({ type: "success", text: "Verification email resent!" });
-                }
-              }}
-            >
-              {resending ? "Sending..." : "Resend Email"}
-            </button>
-          </div>
-          {resendMsg && (
-            <p style={{ marginTop: '12px', color: resendMsg.type === 'error' ? '#d32f2f' : '#2e7d32', fontWeight: 500 }}>
-              {resendMsg.text}
-            </p>
-          )}
-          <p className={regStyles.verifyNote}>
-            Didn&apos;t receive the email? Check your spam folder or contact us at{" "}
-            <a href="mailto:helwancareercenter@gmail.com">helwancareercenter@gmail.com</a>
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.authPage}>

@@ -39,9 +39,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new CustomAuthError("User not found");
         }
 
-        if (!user.emailVerified) {
-          throw new CustomAuthError("Email not verified");
-        }
+        // TODO: Re-enable email verification before production launch
+        // if (!user.emailVerified) {
+        //   throw new CustomAuthError("Email not verified");
+        // }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
 
