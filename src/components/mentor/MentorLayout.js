@@ -5,10 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, Users, BookOpen, CalendarDays, Megaphone,
-  ArrowLeft, LogOut, Menu, Bell
+  ArrowLeft, LogOut, Menu, Bell, ChevronRight, X
 } from "lucide-react";
 import { signOut } from "next-auth/react";
-import styles from "../dashboard/DashboardLayout.module.css"; // Reuse identical layout css
+import styles from "../dashboard/DashboardLayout.module.css";
 
 const navItems = [
   { name: "Overview", href: "/dashboard/mentor", icon: LayoutDashboard },
@@ -20,79 +20,84 @@ const navItems = [
 
 export default function MentorLayout({ children, user }) {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const initials = user?.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
+    : "M";
 
   return (
-    <div className={styles.layout}>
-      {/* Mobile Header */}
-      <header className={styles.mobileHeader}>
-        <div className={styles.mobileLogo}>
-          <div className={styles.logoIcon}>HCC</div>
-          <span>HCC Mentor</span>
-        </div>
-        <button className={styles.mobileMenuBtn} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          <Menu size={24} />
-        </button>
-      </header>
-
+    <div className={styles.dashboardWrapper}>
       {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${isMobileMenuOpen ? styles.sidebarOpen : ''}`}>
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
-          <div className={styles.logoIcon}>HCC</div>
-          <span className={styles.logoText}>HCC Mentor</span>
+          <Link href="/" className={styles.sidebarLogo}>
+            <div className={styles.logoIcon}>HCC</div>
+            <span className={styles.logoText}>Mentor Portal</span>
+          </Link>
+          <button className={styles.closeSidebar} onClick={() => setSidebarOpen(false)}>
+            <X size={20} />
+          </button>
         </div>
 
-        <nav className={styles.nav}>
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <item.icon size={20} />
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
+        <nav className={styles.sidebarNav}>
+          <ul>
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className={`${styles.sidebarLink} ${isActive ? styles.active : ''}`}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <item.icon size={20} />
+                    <span>{item.name}</span>
+                    {isActive && <ChevronRight size={16} className={styles.activeArrow} />}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
 
-        <div className={styles.sidebarFooter}>
-          <Link href="/" className={styles.navItem}>
+        <div className={styles.sidebarBottom}>
+          <Link href="/" className={styles.sidebarLink}>
             <ArrowLeft size={20} />
             <span>Back to Site</span>
           </Link>
-          <button onClick={() => signOut({ callbackUrl: "/login" })} className={styles.navItemLogout}>
-            <div className={styles.avatarMini}>{user?.name?.[0] || 'M'}</div>
+          <button onClick={() => signOut({ callbackUrl: "/login" })} className={`${styles.sidebarLink} ${styles.logoutLink}`} style={{ width: '100%', border: 'none', cursor: 'pointer' }}>
+            <LogOut size={20} />
             <span>Log Out</span>
           </button>
         </div>
       </aside>
 
+      {sidebarOpen && <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />}
+
       {/* Main Content */}
-      <main className={styles.main}>
-        <header className={styles.topbar}>
-          <div className={styles.topbarRight}>
-            <button className={styles.iconBtn}><Bell size={20} /></button>
-            <div className={styles.userProfile}>
-              <div className={styles.avatar}>{user?.name?.[0] || 'M'}</div>
+      <div className={styles.mainArea}>
+        <header className={styles.topBar}>
+          <button className={styles.menuBtn} onClick={() => setSidebarOpen(true)}>
+            <Menu size={22} />
+          </button>
+          
+          <div className={styles.topBarRight}>
+            <button className={styles.notifBtn}><Bell size={20} /></button>
+            <div className={styles.userPill}>
+              <div className={styles.avatar}>{initials}</div>
               <div className={styles.userInfo}>
-                <span className={styles.userName}>{user?.name || "HCC Mentor"}</span>
-                <span className={styles.userRole}>MENTOR</span>
+                <strong>{user?.name || "Mentor"}</strong>
+                <span>MENTOR</span>
               </div>
             </div>
           </div>
         </header>
-        <div className={styles.content}>
+        
+        <main className={styles.pageContent}>
           {children}
-        </div>
-      </main>
-
-      {isMobileMenuOpen && (
-        <div className={styles.overlay} onClick={() => setIsMobileMenuOpen(false)} />
-      )}
+        </main>
+      </div>
     </div>
   );
 }
