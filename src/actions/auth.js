@@ -6,7 +6,8 @@ import { prisma } from "@/lib/prisma";
 
 export async function registerUser(formData) {
   try {
-    const { name, email, universityId, track, password } = formData;
+    const { name, universityId, track, password } = formData;
+    const email = formData.email?.toLowerCase().trim();
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({

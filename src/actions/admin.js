@@ -33,11 +33,20 @@ export async function changeUserRole(userId, newRole) {
   }
 
   try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return { error: "User not found." };
+
+    let updatedName = user.name || "";
+    if (!updatedName.includes("(by admin)")) {
+      updatedName = updatedName.trim() + " (by admin)";
+    }
+
     await prisma.user.update({
       where: { id: userId },
-      data: { role: newRole },
+      data: { role: newRole, name: updatedName },
     });
     revalidatePath("/dashboard/admin/users");
+    revalidatePath("/dashboard/admin");
     return { success: true };
   } catch (error) {
     console.error("Failed to change role:", error);
@@ -55,6 +64,7 @@ export async function deleteUser(userId) {
   try {
     await prisma.user.delete({ where: { id: userId } });
     revalidatePath("/dashboard/admin/users");
+    revalidatePath("/dashboard/admin");
     return { success: true };
   } catch (error) {
     console.error("Failed to delete user:", error);
@@ -66,14 +76,21 @@ export async function createUser(data) {
   await requireAdmin();
 
   try {
-    const existing = await prisma.user.findUnique({ where: { email: data.email } });
+    const email = data.email?.toLowerCase().trim();
+    const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return { error: "User with this email already exists." };
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
+    
+    let newName = data.name || "";
+    if (!newName.includes("(by admin)")) {
+      newName = newName.trim() + " (by admin)";
+    }
+
     const newUser = await prisma.user.create({
       data: {
-        name: data.name,
-        email: data.email,
+        name: newName,
+        email,
         password: hashedPassword,
         role: data.role || "student",
         emailVerified: new Date(),
@@ -93,6 +110,7 @@ export async function createUser(data) {
     }
 
     revalidatePath("/dashboard/admin/users");
+    revalidatePath("/dashboard/admin");
     return { success: true };
   } catch (error) {
     console.error("Failed to create user:", error);

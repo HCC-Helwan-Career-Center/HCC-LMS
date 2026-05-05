@@ -31,8 +31,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new CustomAuthError("Missing credentials");
         }
 
+        const email = credentials.email.toLowerCase().trim();
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
+          where: { email }
         });
 
         if (!user || !user.password) {
