@@ -3,9 +3,17 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+// Fail fast if AUTH_SECRET is missing
+if (!process.env.AUTH_SECRET) {
+  throw new Error(
+    "AUTH_SECRET environment variable is not set. " +
+    "Generate one with: openssl rand -base64 32 — then add it to your .env file."
+  );
+}
+
 class CustomAuthError extends CredentialsSignin {
   constructor(msg) {
-    super();
+    super(msg);
     this.code = msg;
   }
 }
@@ -32,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         if (!user.emailVerified) {
-          throw new CustomAuthError("Email not verified. Please check your inbox.");
+          throw new CustomAuthError("Email not verified");
         }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
@@ -72,5 +80,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  secret: process.env.AUTH_SECRET || "super-secret-key-for-development"
+  secret: process.env.AUTH_SECRET,
 });

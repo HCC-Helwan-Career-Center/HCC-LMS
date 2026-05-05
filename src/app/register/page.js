@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, GraduationCap, Brain, ShieldCheck, Code, Info } from "lucide-react";
-import { registerUser } from "@/actions/auth";
+import { registerUser, resendVerificationEmail } from "@/actions/auth";
 import styles from "../login/auth.module.css";
 import regStyles from "./register.module.css";
 
@@ -28,6 +28,8 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [mockLink, setMockLink] = useState(null);
+  const [resending, setResending] = useState(false);
+  const [resendMsg, setResendMsg] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,10 +91,30 @@ export default function RegisterPage() {
             <Link href="/login" className="btn btn-primary">
               Go to Login <ArrowRight size={16} />
             </Link>
-            <button className="btn btn-secondary" onClick={() => alert("Verification email resent!")}>
-              Resend Email
+            <button
+              className="btn btn-secondary"
+              disabled={resending}
+              onClick={async () => {
+                setResending(true);
+                setResendMsg(null);
+                const res = await resendVerificationEmail(formData.email);
+                setResending(false);
+                if (res?.error) {
+                  setResendMsg({ type: "error", text: res.error });
+                } else {
+                  if (res?.mockedLink) setMockLink(res.mockedLink);
+                  setResendMsg({ type: "success", text: "Verification email resent!" });
+                }
+              }}
+            >
+              {resending ? "Sending..." : "Resend Email"}
             </button>
           </div>
+          {resendMsg && (
+            <p style={{ marginTop: '12px', color: resendMsg.type === 'error' ? '#d32f2f' : '#2e7d32', fontWeight: 500 }}>
+              {resendMsg.text}
+            </p>
+          )}
           <p className={regStyles.verifyNote}>
             Didn&apos;t receive the email? Check your spam folder or contact us at{" "}
             <a href="mailto:helwancareercenter@gmail.com">helwancareercenter@gmail.com</a>

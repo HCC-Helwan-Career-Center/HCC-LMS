@@ -13,6 +13,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Map NextAuth error codes to user-friendly messages
+  const ERROR_MESSAGES = {
+    "Missing credentials": "Please enter your email and password.",
+    "User not found": "No account found with this email.",
+    "Email not verified": "Please verify your email before signing in. Check your inbox.",
+    "Invalid password": "Incorrect password. Please try again.",
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -27,7 +35,10 @@ export default function LoginPage() {
     setLoading(false);
 
     if (res?.error) {
-      setError(res.error);
+      // NextAuth v5: res.code contains the custom error code from CustomAuthError
+      const code = res?.code || res?.error;
+      const message = ERROR_MESSAGES[code] || "Login failed. Please try again.";
+      setError(message);
     } else if (res?.ok) {
       window.location.href = "/dashboard";
     }
