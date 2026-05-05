@@ -1,6 +1,7 @@
 {
   "name": "hcc-lms",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -24,5 +25,8 @@
     "eslint-config-next": "16.2.4",
     "prisma": "^5.22.0",
     "tsx": "^4.21.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

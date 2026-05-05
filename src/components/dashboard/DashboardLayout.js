@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }) {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
   
   // Use stable defaults until client mounts to avoid hydration mismatch

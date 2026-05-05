@@ -15,8 +15,7 @@ function AnimatedCounter({ value, suffix, inView }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!inView) return;
-    if (value === 0) { setCount(0); return; }
+    if (!inView || value === 0) return;
 
     let start = 0;
     const duration = 2000;
