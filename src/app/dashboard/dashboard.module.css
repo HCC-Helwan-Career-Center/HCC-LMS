@@ -1,0 +1,361 @@
+/* Dashboard Home Styles */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* Welcome Banner */
+.welcome {
+  background: linear-gradient(135deg, #0F1B2D 0%, #1E3A5F 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-2xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.welcomeText h1 {
+  color: var(--color-text-on-dark);
+  font-size: 1.75rem;
+  margin-bottom: var(--space-xs);
+}
+
+.welcomeText p {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.welcomeStats {
+  display: flex;
+  gap: var(--space-xl);
+  flex-shrink: 0;
+}
+
+.welcomeStat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  color: var(--color-primary-light);
+}
+
+.welcomeStat strong {
+  display: block;
+  font-size: 1.25rem;
+  font-family: var(--font-display);
+  color: var(--color-text-on-dark);
+  line-height: 1.2;
+}
+
+.welcomeStat span {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Sections */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+}
+
+.viewAll {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: gap var(--transition-fast);
+}
+
+.viewAll:hover {
+  gap: var(--space-sm);
+}
+
+/* Track Cards */
+.trackGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.trackCard {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  transition: all var(--transition-base);
+}
+
+.trackCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.trackCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.trackCardIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.trackCardHeader h3 {
+  font-size: 1.125rem;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+
+.trackModule {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+/* Progress */
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+}
+
+.progressInfo span {
+  color: var(--color-text-secondary);
+}
+
+.progressInfo strong {
+  color: var(--color-text-primary);
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 1s ease-out;
+}
+
+/* Track Card Footer */
+.trackCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.nextSession {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.continueBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: gap var(--transition-fast);
+}
+
+.continueBtn:hover {
+  gap: var(--space-sm);
+}
+
+/* Bottom Grid */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-lg);
+}
+
+.card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.cardHeader h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.0625rem;
+  color: var(--color-text-primary);
+}
+
+/* Sessions */
+.sessionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sessionItem {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.sessionItem:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-alpha);
+}
+
+.sessionDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  text-align: center;
+}
+
+.sessionDate strong {
+  font-size: 0.8125rem;
+  color: var(--color-primary);
+}
+
+.sessionDate span {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.sessionInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.sessionTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.sessionTrack {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Badges */
+.badgesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.badgeItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.badgeEmoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.badgeItem strong {
+  display: block;
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+}
+
+.badgeItem span {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .trackGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+
+  .welcomeStats {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .welcomeText h1 {
+    font-size: 1.5rem;
+  }
+}

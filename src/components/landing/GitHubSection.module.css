@@ -1,0 +1,134 @@
+.section {
+  position: relative;
+  overflow: hidden;
+}
+
+.flow {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+.flowItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  position: relative;
+  text-align: center;
+}
+
+.stepIcon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  background: rgba(232, 135, 30, 0.12);
+  border: 1px solid rgba(232, 135, 30, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary-light);
+  transition: all var(--transition-base);
+}
+
+.flowItem:hover .stepIcon {
+  background: var(--color-primary);
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: var(--shadow-glow);
+}
+
+.flowItem strong {
+  font-size: 1rem;
+  color: var(--color-text-on-dark);
+}
+
+.flowItem span {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.arrow {
+  position: absolute;
+  right: -32px;
+  top: 24px;
+  color: var(--color-primary);
+  opacity: 0.5;
+}
+
+.terminal {
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #0D1117;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.termHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.termDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.termTitle {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.termBody {
+  padding: var(--space-lg);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 2;
+}
+
+.termBody p {
+  color: #C9D1D9;
+}
+
+.prompt {
+  color: var(--color-primary-light);
+  margin-right: 8px;
+}
+
+.success {
+  color: #27C93F !important;
+  margin-top: var(--space-sm);
+}
+
+.ctaWrap {
+  text-align: center;
+  margin-top: var(--space-2xl);
+}
+
+@media (max-width: 768px) {
+  .flow {
+    gap: var(--space-lg);
+  }
+
+  .arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}

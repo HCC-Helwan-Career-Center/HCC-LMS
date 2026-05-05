@@ -1,0 +1,32 @@
+.page { max-width: 900px; }
+.title { font-size: 1.75rem; margin-bottom: var(--space-xs); }
+.subtitle { color: var(--color-text-secondary); margin-bottom: var(--space-xl); }
+
+.sectionTitle { font-size: 1.125rem; margin-bottom: var(--space-md); margin-top: var(--space-xl); }
+.sectionTitle:first-of-type { margin-top: 0; }
+
+.badgeGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
+
+.badgeCard {
+  background: #fff; border-radius: var(--radius-md); border: 1px solid var(--color-border);
+  padding: var(--space-xl); text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-sm);
+  transition: all var(--transition-base);
+}
+.badgeCard:hover { box-shadow: var(--shadow-md); }
+
+.badgeCard.locked {
+  opacity: 0.55; filter: grayscale(0.5);
+}
+.badgeCard.locked:hover { opacity: 0.7; }
+
+.badgeEmoji { font-size: 2.5rem; line-height: 1; }
+.badgeCard strong { font-size: 1rem; color: var(--color-text-primary); }
+.badgeCard p { font-size: 0.8125rem; color: var(--color-text-secondary); }
+
+.badgeDate { font-size: 0.6875rem; color: var(--color-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.lockTag { font-size: 0.6875rem; color: var(--color-text-muted); font-weight: 600; }
+
+@media (max-width: 768px) { .badgeGrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .badgeGrid { grid-template-columns: 1fr; } }

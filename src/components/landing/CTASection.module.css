@@ -1,0 +1,42 @@
+.cta {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.glowOrb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(232, 135, 30, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.inner h2 {
+  color: var(--color-text-on-dark);
+  font-size: 2.75rem;
+}
+
+.inner p {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+  max-width: 560px;
+}
+
+@media (max-width: 768px) {
+  .inner h2 {
+    font-size: 2rem;
+  }
+}

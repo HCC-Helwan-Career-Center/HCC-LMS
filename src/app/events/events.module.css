@@ -1,0 +1,186 @@
+/* Events Page Styles */
+
+.hero {
+  position: relative;
+  min-height: 42vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #0F1B2D 0%, #1E3A5F 60%, #132A46 100%);
+  padding-top: calc(var(--nav-height) + var(--space-3xl));
+  padding-bottom: var(--space-3xl);
+  text-align: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.heroContent h1 {
+  color: var(--color-text-on-dark);
+  font-size: 3rem;
+  margin: var(--space-md) 0;
+}
+
+.heroContent p {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+}
+
+/* Event Grid */
+.eventGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.eventCard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl);
+}
+
+.eventTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.trackTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.spots {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.eventTitle {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+.eventDesc {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.eventMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.eventMeta span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+/* Past Events */
+.pastSection {
+  background: var(--color-bg-secondary);
+}
+
+.pastGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.pastCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-lg);
+  background: #fff;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.pastCard:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-primary);
+}
+
+.pastDate {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pastCard h4 {
+  font-size: 1rem;
+  margin: 2px 0 4px;
+  color: var(--color-text-primary);
+}
+
+.pastTrack {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.pastAttendees {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .eventGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContent h1 {
+    font-size: 2.25rem;
+  }
+
+  .eventGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pastCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+}

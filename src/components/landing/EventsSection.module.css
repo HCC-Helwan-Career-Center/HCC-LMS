@@ -1,0 +1,96 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-xl);
+}
+
+.colTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-primary);
+  font-size: 1.125rem;
+}
+
+.eventsList,
+.announcementsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.eventCard {
+  padding: var(--space-lg);
+}
+
+.trackTag {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.eventCard h5 {
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.eventMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.eventMeta span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.annCard {
+  padding: var(--space-lg);
+}
+
+.annDate {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.annCard h5 {
+  color: var(--color-text-primary);
+  margin: var(--space-xs) 0 var(--space-sm);
+}
+
+.annCard p {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.readMore {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: color var(--transition-fast);
+}
+
+.readMore:hover {
+  color: var(--color-primary-dark);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

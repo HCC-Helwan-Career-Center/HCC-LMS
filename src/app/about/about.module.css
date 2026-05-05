@@ -1,0 +1,230 @@
+/* About Page Styles */
+
+.hero {
+  position: relative;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #0F1B2D 0%, #1E3A5F 60%, #132A46 100%);
+  padding-top: calc(var(--nav-height) + var(--space-3xl));
+  padding-bottom: var(--space-3xl);
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+.heroContent h1 {
+  color: var(--color-text-on-dark);
+  font-size: 3rem;
+  margin: var(--space-md) 0;
+}
+
+.heroContent p {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+/* Mission & Vision */
+.missionSection {
+  background: var(--color-bg-secondary);
+}
+
+.missionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+}
+
+.missionCard {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.missionCard:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.missionIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-alpha);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-lg);
+}
+
+.missionCard h3 {
+  margin-bottom: var(--space-md);
+}
+
+.missionCard p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Values */
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.valueCard {
+  text-align: center;
+  padding: var(--space-xl);
+}
+
+.valueIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-md);
+}
+
+.valueCard h4 {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+.valueCard p {
+  font-size: 0.9375rem;
+}
+
+/* Timeline */
+.timelineSection {
+  position: relative;
+}
+
+.timeline {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-left: var(--space-xl);
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-primary-light));
+  border-radius: var(--radius-full);
+}
+
+.timelineItem {
+  position: relative;
+  margin-bottom: var(--space-xl);
+  padding-left: var(--space-lg);
+}
+
+.timelineDot {
+  position: absolute;
+  left: -19px;
+  top: 8px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 3px solid var(--color-bg-dark);
+  box-shadow: 0 0 0 3px rgba(232, 135, 30, 0.3);
+}
+
+.timelineCard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.timelineYear {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-primary-light);
+}
+
+.timelineCard p {
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+/* Differentiators */
+.diffGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.diffItem {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-base);
+}
+
+.diffItem:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.diffItem h4 {
+  margin-bottom: var(--space-sm);
+  font-size: 1.125rem;
+}
+
+.diffItem p {
+  font-size: 0.9375rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .valuesGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContent h1 {
+    font-size: 2.25rem;
+  }
+
+  .missionGrid,
+  .diffGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .valuesGrid {
+    grid-template-columns: 1fr;
+  }
+}

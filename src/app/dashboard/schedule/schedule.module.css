@@ -1,0 +1,32 @@
+.page { max-width: 800px; }
+.title { font-size: 1.75rem; margin-bottom: var(--space-xs); }
+.subtitle { color: var(--color-text-secondary); margin-bottom: var(--space-xl); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.sessionCard {
+  display: flex; gap: var(--space-lg); background: #fff;
+  border-radius: var(--radius-md); border: 1px solid var(--color-border);
+  padding: var(--space-lg); transition: all var(--transition-base);
+}
+.sessionCard:hover { box-shadow: var(--shadow-md); border-color: var(--color-primary); }
+
+.dateBadge {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 80px; padding: var(--space-sm); background: var(--color-bg-secondary);
+  border-radius: var(--radius-sm); text-align: center;
+}
+.dateBadge span { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); }
+.dateBadge strong { font-size: 1rem; color: var(--color-text-primary); }
+
+.sessionBody { flex: 1; }
+.sessionTrackTag {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+  border-radius: var(--radius-full); font-size: 0.6875rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--space-sm);
+}
+.sessionBody h3 { font-size: 1.0625rem; margin-bottom: var(--space-sm); }
+.sessionMeta { display: flex; gap: var(--space-lg); }
+.sessionMeta span { display: flex; align-items: center; gap: 4px; font-size: 0.8125rem; color: var(--color-text-secondary); }
+
+@media (max-width: 640px) { .sessionCard { flex-direction: column; } .dateBadge { flex-direction: row; gap: var(--space-sm); } }
