@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { User, Mail, GraduationCap, Phone, MapPin, Book, Camera, Save } from "lucide-react";
+import { User, Mail, GraduationCap, Phone, MapPin, Book, Camera, Save, Loader2 } from "lucide-react";
+import { getUserProfile, updateUserProfile } from "@/actions/user";
 import styles from "./settings.module.css";
 
 function GithubIcon({ size = 18, className }) {
@@ -35,23 +36,55 @@ export default function SettingsPage() {
     linkedin: "",
   });
 
-  // Pre-fill from session when available
-  useEffect(() => {
-    if (session?.user) {
-      setFormData(prev => ({
-        ...prev,
-        name: session.user.name || "",
-        email: session.user.email || "",
-      }));
-    }
-  }, [session]);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = (e) => {
+  // Pre-fill from database
+  useEffect(() => {
+    async function loadProfile() {
+      if (session?.user) {
+        const profile = await getUserProfile();
+        if (profile) {
+          setFormData({
+            name: profile.name || "",
+            email: profile.email || "",
+            universityId: profile.universityId || "",
+            phone: profile.phone || "",
+            academicYear: profile.academicYear || "Freshman",
+            department: profile.department || "",
+            github: profile.github || "",
+            linkedin: profile.linkedin || "",
+          });
+        }
+        setLoading(false);
+      }
+    }
+    loadProfile();
+  }, [session]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    
+    const result = await updateUserProfile(formData);
+    
+    setSaving(false);
+    if (result.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      alert(result.error || "Failed to save profile");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className={styles.page} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <Loader2 className="animate-spin" size={32} color="#E8871E" />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -98,8 +131,7 @@ export default function SettingsPage() {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
+                    disabled
                   />
                 </div>
               </div>
@@ -193,8 +225,9 @@ export default function SettingsPage() {
 
           <div className={styles.actions}>
             {saved && <span className={styles.successMsg}>Changes saved successfully!</span>}
-            <button type="submit" className="btn btn-primary">
-              <Save size={18} /> Save Changes
+            <button type="submit" className="btn btn-primary" disabled={saving}>
+              {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
