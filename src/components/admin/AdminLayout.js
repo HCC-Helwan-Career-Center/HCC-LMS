@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard, Users, GraduationCap, Megaphone,
-  BarChart2, ArrowLeft, Menu, X, Bell, LogOut, ChevronRight
+  BarChart2, ArrowLeft, Menu, X, LogOut, ChevronRight
 } from "lucide-react";
 import styles from "../dashboard/DashboardLayout.module.css";
+import NotificationBell from "../dashboard/NotificationBell";
 
 const adminLinks = [
   { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
@@ -83,6 +84,7 @@ export default function AdminLayout({ children }) {
             <Menu size={22} />
           </button>
           <div className={styles.topBarRight}>
+            <NotificationBell />
             <div className={styles.userPill}>
               <div className={styles.avatar}>{user.initials}</div>
               <div className={styles.userInfo}>

@@ -6,8 +6,8 @@ export default async function MentorAnnouncementsPage() {
   const { dbUser } = await requireMentor();
   const trackIds = dbUser.mentorTracks.map(t => t.id);
 
-  // Mentor can only see announcements targeting their tracks
   const trackSlugs = dbUser.mentorTracks.map(t => t.slug);
+  trackSlugs.push("all"); // Always include global announcements from admin
 
   const announcements = await prisma.announcement.findMany({
     where: { target: { in: trackSlugs } },

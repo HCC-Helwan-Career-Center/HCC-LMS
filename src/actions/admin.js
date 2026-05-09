@@ -36,14 +36,9 @@ export async function changeUserRole(userId, newRole) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return { error: "User not found." };
 
-    let updatedName = user.name || "";
-    if (!updatedName.includes("(by admin)")) {
-      updatedName = updatedName.trim() + " (by admin)";
-    }
-
     await prisma.user.update({
       where: { id: userId },
-      data: { role: newRole, name: updatedName },
+      data: { role: newRole },
     });
     revalidatePath("/dashboard/admin/users");
     revalidatePath("/dashboard/admin");
@@ -82,14 +77,9 @@ export async function createUser(data) {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     
-    let newName = data.name || "";
-    if (!newName.includes("(by admin)")) {
-      newName = newName.trim() + " (by admin)";
-    }
-
     const newUser = await prisma.user.create({
       data: {
-        name: newName,
+        name: data.name || "",
         email,
         password: hashedPassword,
         role: data.role || "student",
@@ -233,6 +223,44 @@ export async function removeMentorFromTrack(trackId, mentorId) {
   } catch (error) {
     console.error("Failed to remove mentor:", error);
     return { error: "Failed to remove mentor." };
+  }
+}
+
+export async function createTrack(data) {
+  await requireAdmin();
+
+  try {
+    const existing = await prisma.track.findUnique({ where: { slug: data.slug } });
+    if (existing) return { error: "A track with this slug already exists." };
+
+    await prisma.track.create({
+      data: {
+        title: data.title,
+        slug: data.slug,
+        description: data.description || null,
+        color: data.color || "#8B5CF6",
+      },
+    });
+    revalidatePath("/dashboard/admin/tracks");
+    revalidatePath("/dashboard/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to create track:", error);
+    return { error: "Failed to create track." };
+  }
+}
+
+export async function deleteTrack(trackId) {
+  await requireAdmin();
+
+  try {
+    await prisma.track.delete({ where: { id: trackId } });
+    revalidatePath("/dashboard/admin/tracks");
+    revalidatePath("/dashboard/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete track:", error);
+    return { error: "Failed to delete track." };
   }
 }
 

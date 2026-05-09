@@ -9,6 +9,7 @@ import {
   Award, Bell, Settings, LogOut, Menu, X, ChevronRight
 } from "lucide-react";
 import styles from "./DashboardLayout.module.css";
+import NotificationBell from "./NotificationBell";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -114,10 +115,7 @@ export default function DashboardLayout({ children }) {
           </button>
 
           <div className={styles.topBarRight}>
-            <button className={styles.notifBtn} aria-label="Notifications">
-              <Bell size={20} />
-              <span className={styles.notifDot} />
-            </button>
+            <NotificationBell />
             <div className={styles.userPill}>
               <div className={styles.avatar}>{user.initials}</div>
               <div className={styles.userInfo}>

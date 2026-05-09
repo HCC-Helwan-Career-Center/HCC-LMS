@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
+import {
   LayoutDashboard, Users, BookOpen, CalendarDays, Megaphone,
-  ArrowLeft, LogOut, Menu, Bell, ChevronRight, X
+  ArrowLeft, LogOut, Menu, ChevronRight, X
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import styles from "../dashboard/DashboardLayout.module.css";
+import NotificationBell from "../dashboard/NotificationBell";
 
 const navItems = [
   { name: "Overview", href: "/dashboard/mentor", icon: LayoutDashboard },
@@ -83,7 +84,7 @@ export default function MentorLayout({ children, user }) {
           </button>
           
           <div className={styles.topBarRight}>
-            <button className={styles.notifBtn}><Bell size={20} /></button>
+            <NotificationBell />
             <div className={styles.userPill}>
               <div className={styles.avatar}>{initials}</div>
               <div className={styles.userInfo}>
