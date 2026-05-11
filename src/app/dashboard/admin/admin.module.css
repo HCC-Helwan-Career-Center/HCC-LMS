@@ -109,7 +109,7 @@
 
 .table th {
   text-align: left;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) 10px;
   background: var(--color-bg-secondary);
   color: var(--color-text-secondary);
   font-weight: 600;
@@ -121,10 +121,9 @@
 }
 
 .table td {
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) 10px;
   border-bottom: 1px solid var(--color-border);
   color: var(--color-text-primary);
-  white-space: nowrap;
 }
 
 .table tr:last-child td {

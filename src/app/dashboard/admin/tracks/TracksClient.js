@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Brain, ShieldCheck, Code, X, Pencil, UserPlus, UserMinus } from "lucide-react";
-import { updateTrack, assignMentorToTrack, removeMentorFromTrack } from "@/actions/admin";
+import { Brain, ShieldCheck, Code, X, Pencil, UserPlus, UserMinus, Plus, Trash2 } from "lucide-react";
+import { updateTrack, assignMentorToTrack, removeMentorFromTrack, createTrack, deleteTrack } from "@/actions/admin";
 import styles from "../admin.module.css";
 
 const TRACK_ICONS = {
@@ -12,16 +12,37 @@ const TRACK_ICONS = {
   swe: Code,
 };
 
-export default function TracksClient({ tracks }) {
+export default function TracksClient({ tracks, mentors }) {
   const router = useRouter();
   const [editTrack, setEditTrack] = useState(null);
   const [manageMentorsTrack, setManageMentorsTrack] = useState(null);
   const [form, setForm] = useState({ title: "", slug: "", description: "", color: "" });
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({ title: "", slug: "", description: "", color: "#8B5CF6" });
   const [saving, setSaving] = useState(false);
 
   function openEdit(track) {
     setForm({ title: track.title, slug: track.slug, description: track.description || "", color: track.color });
     setEditTrack(track);
+  }
+
+  async function handleCreate() {
+    setSaving(true);
+    const res = await createTrack(createForm);
+    setSaving(false);
+    if (res.error) { alert(res.error); return; }
+    setCreateOpen(false);
+    setCreateForm({ title: "", slug: "", description: "", color: "#8B5CF6" });
+    router.refresh();
+  }
+
+  async function handleDelete(trackId, trackTitle) {
+    if (!window.confirm(`Delete "${trackTitle}"? This will remove all enrollments and sessions for this track.`)) return;
+    setSaving(true);
+    const res = await deleteTrack(trackId);
+    setSaving(false);
+    if (res.error) alert(res.error);
+    else router.refresh();
   }
 
   async function handleSave() {
@@ -63,8 +84,13 @@ export default function TracksClient({ tracks }) {
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
-        <h1>Track Management</h1>
-        <p>Manage the {tracks.length} learning tracks.</p>
+        <div>
+          <h1>Track Management</h1>
+          <p>Manage the {tracks.length} learning tracks.</p>
+        </div>
+        <button className="btn btn-primary" onClick={() => setCreateOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Plus size={16} /> New Track
+        </button>
       </div>
 
       {/* Track Cards */}
@@ -94,6 +120,9 @@ export default function TracksClient({ tracks }) {
                 </button>
                 <button className={styles.actionBtn} onClick={() => setManageMentorsTrack(t)} style={{ flex: 1, justifyContent: 'center' }}>
                   <UserPlus size={14} style={{ marginRight: 4 }} /> Mentors
+                </button>
+                <button className={styles.actionBtn} onClick={() => handleDelete(t.id, t.title)} disabled={saving} style={{ color: '#D32F2F' }}>
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>
@@ -132,6 +161,45 @@ export default function TracksClient({ tracks }) {
           </table>
         </div>
       </div>
+
+      {/* Create Track Modal */}
+      {createOpen && (
+        <div className={styles.modalOverlay} onClick={() => setCreateOpen(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>New Track</h3>
+              <button className={styles.actionBtn} onClick={() => setCreateOpen(false)}><X size={16} /></button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label>Title</label>
+                <input value={createForm.title} onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })} placeholder="e.g. Machine Learning" />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Slug</label>
+                <input value={createForm.slug} onChange={(e) => setCreateForm({ ...createForm, slug: e.target.value })} placeholder="e.g. ml (used in URLs)" />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea value={createForm.description} onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })} placeholder="Short description of the track" />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Color</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input value={createForm.color} onChange={(e) => setCreateForm({ ...createForm, color: e.target.value })} placeholder="#8B5CF6" />
+                  <div style={{ width: 32, height: 32, borderRadius: 6, background: createForm.color, border: '1px solid #E2E8F0', flexShrink: 0 }} />
+                </div>
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button className="btn btn-secondary" onClick={() => setCreateOpen(false)} style={{ padding: '8px 20px', fontSize: '0.875rem' }}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleCreate} disabled={saving} style={{ padding: '8px 20px', fontSize: '0.875rem' }}>
+                {saving ? "Creating..." : "Create Track"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Track Modal */}
       {editTrack && (
